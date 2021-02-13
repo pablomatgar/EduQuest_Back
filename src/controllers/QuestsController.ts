@@ -68,6 +68,10 @@ export default class QuestsController<
     this.ok({ quest: { id: questId, ...data } });
   }
 
+  /**
+   * Fetches paginated quests, optionally filter quests by room id.
+   * @param params
+   */
   private async getQuests(params: IGetQuestsData) {
     if (!this.dataStore) {
       console.log("No data store found so no DB reads can happen :(");
