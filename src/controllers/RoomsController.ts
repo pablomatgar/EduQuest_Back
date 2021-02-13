@@ -50,8 +50,8 @@ export default class RoomsController<
     }
     const roomId = uuidv4();
     const collection = this.dataStore.collection(roomsCollection);
+    const teacher = await this.cu.getUser();
     try {
-      const teacher = await this.cu.getUser();
       if (!teacher) {
         throw new Error("No teacher found!");
       }
@@ -63,7 +63,7 @@ export default class RoomsController<
       console.log(err);
       return this.serverError();
     }
-    this.ok({ room: { id: roomId, ...paramsData } });
+    this.ok({ room: { id: roomId, teacherId: teacher.id, ...paramsData } });
   }
 
   private async getRooms(paramsData) {
@@ -77,7 +77,9 @@ export default class RoomsController<
 
     const user = await this.cu.getUser();
     const collection = this.dataStore.collection(roomsCollection);
-    let query = collection.limit(paramsData.take).offset(paramsData.skip);
+    let query = collection
+      .limit(Number(paramsData.take))
+      .offset(Number(paramsData.skip));
     if (await this.cu.isTeacher()) {
       query = query.where("teacherId", "==", user!.id);
     } else {

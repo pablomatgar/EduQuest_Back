@@ -20,7 +20,7 @@ interface IUser {
   email: string;
   name: string;
   points: number;
-  userType: string;
+  type: string;
 }
 
 /**
@@ -39,6 +39,7 @@ export class CurrentUser<TDataStore extends firebase.firestore.Firestore>
     this.store = args.store;
     this.req = args.req;
     this.userId = args.userId;
+    this.hasAttemptedToFetchUser = false;
   }
 
   /**
@@ -84,12 +85,12 @@ export class CurrentUser<TDataStore extends firebase.firestore.Firestore>
 
   public async isStudent() {
     const user = await this.getUser();
-    return user !== undefined && user.userType === "STUDENT";
+    return user !== undefined && user.type === "STUDENT";
   }
 
   public async isTeacher() {
     const user = await this.getUser();
-    return user !== undefined && user.userType === "TEACHER";
+    return user !== undefined && user.type === "TEACHER";
   }
 
   private async fetchUserFromStore() {
