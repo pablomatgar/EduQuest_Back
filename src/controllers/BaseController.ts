@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import { ICurrentUser } from "../lib/CurrentUser";
 
 interface IConstructorArgs<TDataStore> {
   req: Request;
   res: Response;
   dataStore?: TDataStore;
+  cu: ICurrentUser;
 }
 
 export type THttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -26,12 +28,14 @@ export abstract class BaseController<TDataStore> implements IController {
   protected readonly req: Request;
   protected readonly res: Response;
   protected readonly dataStore?: TDataStore;
+  protected readonly cu: ICurrentUser;
   private hasSentResponse: boolean;
 
   constructor(args: IConstructorArgs<TDataStore>) {
     this.req = args.req;
     this.res = args.res;
     this.dataStore = args.dataStore;
+    this.cu = args.cu;
     this.hasSentResponse = false;
   }
 
