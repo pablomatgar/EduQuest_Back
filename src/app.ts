@@ -4,23 +4,22 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
+import * as firebase from "firebase-admin";
+import questsRouter from "./routes/quests";
 
-const admin = require("firebase-admin"); //Módulo de Firebase
 const serviceAccount = require("../treehacks-b13b9-firebase-adminsdk-gyipb-3d377bee26.json");
 
 const app = express();
 const allowlist = (process.env.CLIENT_ALLOWLIST as string).split(",");
 
-admin.initializeApp({
+firebase.initializeApp({
   //Credenciales que se deben establecer en los procesos que requieran el uso de Firebase
-  credencial: admin.credential.cert(serviceAccount),
-  databaseURL: "https://treehacks.firebaseio.com",
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://treehacks-b13b9.firebaseio.com/",
 });
 
-const db = admin.database(); //Con este objeto podemos escribir a la base de datos, o hacer lecturas en la misma
-
 const originCallback = (origin, callback) => {
-  if (allowlist.indexOf(origin) !== -1) {
+  if (allowlist.indexOf(origin) !== -1 || !origin) {
     callback(null, true);
   } else {
     callback(new Error(`Origin ${origin} not allowed by CORS!`));
@@ -33,6 +32,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+
+app.use("/api", questsRouter);
+
 const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server, {
@@ -102,5 +104,3 @@ io.on("connection", (socket) => {
 const port = process.env.PORT || 8000;
 
 server.listen(port, () => console.log("server is running on port 8000"));
-
-module.exports = app;

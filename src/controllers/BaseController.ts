@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 
-interface IConstructorArgs {
+interface IConstructorArgs<TDataStore> {
   req: Request;
   res: Response;
+  dataStore?: TDataStore;
 }
 
 export type THttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -21,14 +22,16 @@ interface IController {
  * Every controller must extend from this BaseController in order to delegate some common
  * activities such as parameter validation.
  */
-export abstract class BaseController implements IController {
+export abstract class BaseController<TDataStore> implements IController {
   protected readonly req: Request;
   protected readonly res: Response;
+  protected readonly dataStore?: TDataStore;
   private hasSentResponse: boolean;
 
-  constructor(args: IConstructorArgs) {
+  constructor(args: IConstructorArgs<TDataStore>) {
     this.req = args.req;
     this.res = args.res;
+    this.dataStore = args.dataStore;
     this.hasSentResponse = false;
   }
 
@@ -81,9 +84,9 @@ export abstract class BaseController implements IController {
 
   /**
    * Implement this method to handle the current request based on the HTTP method
-   * and the data received.
+   * and the params received.
    * @param method
-   * @param data
+   * @param paramsData
    *
    * @example
    * ```
@@ -99,7 +102,7 @@ export abstract class BaseController implements IController {
    */
   protected abstract handleRequestImpl(
     method: THttpMethod,
-    data: any
+    paramsData: any
   ): Promise<void>;
 
   // ========================= PROTECTED METHODS =============================
@@ -155,7 +158,7 @@ export abstract class BaseController implements IController {
   }
 
   private reqToString(): string {
-    return `${this.req.method} ${this.req.path}`;
+    return `${this.req.method} ${this.req.url}`;
   }
 
   private notAcceptable(): void {
