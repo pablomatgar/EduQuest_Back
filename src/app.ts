@@ -51,6 +51,7 @@ io.on("connection", (socket) => {
   //If that user doesnt exist
   if (!users[socket.id]) {
     //We create the socket id
+    console.log("Adding new user to the room!");
     users[socket.id] = socket.id;
   }
 
@@ -59,6 +60,7 @@ io.on("connection", (socket) => {
   //We emit the event "allUsers"
   io.sockets.emit("allUsers", users);
   //We suscribe to the "disconnect" event
+  console.log("Sending ID and All users");
   socket.on("disconnect", () => {
     //If happens, then we are going to delete de user
     delete users[socket.id];
@@ -74,11 +76,12 @@ io.on("connection", (socket) => {
     });
   });
 
-  //We suscribe to "Notification" of a  new quest
-  //In the client, the socket that is listening should update the state of the quest of every user by reading again from the database the quest.
+  //We suscribe to the "createNot..." event
+  // This events needs the following info inside the data object:
+  // title, description, type, userType
   socket.on("createNotification", (data) => {
-    console.log("A quest has been send!");
-    socket.emit("new_quest", data);
+    socket.emit("notification", data);
+    console.log("A notification has been created");
   });
 
   //We suscribe to "acceptCall"
