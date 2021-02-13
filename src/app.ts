@@ -3,6 +3,7 @@ dotenv.config();
 import express from "express";
 import http from "http";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 const app = express();
 const allowlist = (process.env.CLIENT_ALLOWLIST as string).split(",");
@@ -20,6 +21,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
 const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server, {
