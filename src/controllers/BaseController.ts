@@ -52,6 +52,7 @@ export abstract class BaseController implements IController {
       console.log(
         `An error ocurred while handling request ${this.reqToString()}`
       );
+      console.log(err);
       if (!this.hasSentResponse) {
         this.serverError();
       }
