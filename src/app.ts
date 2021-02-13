@@ -5,8 +5,18 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 
+const admin = require("firebase-admin"); //Módulo de Firebase
+
 const app = express();
 const allowlist = (process.env.CLIENT_ALLOWLIST as string).split(",");
+
+admin.initializeApp({
+  //Credenciales que se deben establecer en los procesos que requieran el uso de Firebase
+  credencial: admin.credential.applicationDefault(),
+  databaseURL: "https://treehacks.firebaseio.com",
+});
+
+const db = admin.database(); //Con este objeto podemos escribir a la base de datos, o hacer lecturas en la misma
 
 const originCallback = (origin, callback) => {
   if (allowlist.indexOf(origin) !== -1) {
