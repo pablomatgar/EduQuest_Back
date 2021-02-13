@@ -76,21 +76,9 @@ io.on("connection", (socket) => {
 
   //We suscribe to "Notification" of a  new quest
   //In the client, the socket that is listening should update the state of the quest of every user by reading again from the database the quest.
-  socket.on("notification_NewQuest", (data) => {
+  socket.on("createNotification", (data) => {
     console.log("A quest has been send!");
-    socket.emit("new_quest", {
-      name: data.questName,
-      description: data.questDescription,
-    });
-  });
-
-  //We suscribe to "Notification" of a  new quest
-  socket.on("notification_questCompleted", (data) => {
-    console.log("A quest has been completed");
-    io.to(data.userToCall).emit("quest_completed", {
-      name: data.questName,
-      description: data.questDescription,
-    });
+    socket.emit("new_quest", data);
   });
 
   //We suscribe to "acceptCall"
