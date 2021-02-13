@@ -6,7 +6,7 @@ interface IConstructorArgs {
   res: Response;
 }
 
-type THttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+export type THttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 interface IController {
   /**
