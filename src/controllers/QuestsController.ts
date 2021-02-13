@@ -75,7 +75,7 @@ export default class QuestsController<
   private async getQuests(params: IGetQuestsData) {
     if (!this.dataStore) {
       console.log("No data store found so no DB reads can happen :(");
-      return;
+      throw new Error("No data store found!");
     }
     const collection = this.dataStore.collection(questsCollection);
     let query = collection

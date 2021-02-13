@@ -6,6 +6,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import * as firebase from "firebase-admin";
 import questsRouter from "./routes/quests";
+import roomsRouter from "./routes/rooms";
+import meRouter from "./routes/me";
 
 const serviceAccount = require("../treehacks-b13b9-firebase-adminsdk-gyipb-3d377bee26.json");
 
@@ -34,6 +36,8 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use("/api", questsRouter);
+app.use("/api", roomsRouter);
+app.use("/api", meRouter);
 
 const server = http.createServer(app);
 const socket = require("socket.io");
