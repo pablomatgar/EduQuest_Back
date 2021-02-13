@@ -126,6 +126,14 @@ export abstract class BaseController<TDataStore> implements IController {
     this.sendResponse(200, msg, json);
   }
 
+  /**
+   * Sends an unauthorized response with an empty json.
+   * @param method
+   */
+  protected notAuthorized() {
+    this.sendResponse(403, "Unauthorized", {});
+  }
+
   // ========================== PRIVATE INTERFACE ============================
 
   /**
