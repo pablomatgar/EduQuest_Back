@@ -1,17 +1,35 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import http from "http";
+import cors from "cors";
 
 const app = express();
+const allowlist = (process.env.CLIENT_ALLOWLIST as string).split(",");
+
+const originCallback = (origin, callback) => {
+  if (allowlist.indexOf(origin) !== -1) {
+    callback(null, true);
+  } else {
+    callback(new Error(`Origin ${origin} not allowed by CORS!`));
+  }
+};
+
+const corsOptions = {
+  origin: originCallback,
+};
+
+app.use(cors(corsOptions));
 const server = http.createServer(app);
 const socket = require("socket.io");
-const io = socket(server);
+const io = socket(server, {
+  cors: {
+    origin: originCallback,
+    credentials: true,
+  },
+});
 //We are going to store all the users in an array (for now)
 const users = {};
-
-app.use((_req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
 
 //We susbscribe to a "connection event"
 io.on("connection", (socket) => {
