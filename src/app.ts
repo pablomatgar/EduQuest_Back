@@ -6,13 +6,14 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 const admin = require("firebase-admin"); //Módulo de Firebase
+const serviceAccount = require("../treehacks-b13b9-firebase-adminsdk-gyipb-3d377bee26.json");
 
 const app = express();
 const allowlist = (process.env.CLIENT_ALLOWLIST as string).split(",");
 
 admin.initializeApp({
   //Credenciales que se deben establecer en los procesos que requieran el uso de Firebase
-  credencial: admin.credential.applicationDefault(),
+  credencial: admin.credential.cert(serviceAccount),
   databaseURL: "https://treehacks.firebaseio.com",
 });
 
