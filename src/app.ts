@@ -8,6 +8,7 @@ import * as firebase from "firebase-admin";
 import questsRouter from "./routes/quests";
 import roomsRouter from "./routes/rooms";
 import meRouter from "./routes/me";
+import usersRouter from "./routes/users";
 
 const serviceAccount = require("../treehacks-b13b9-firebase-adminsdk-gyipb-3d377bee26.json");
 
@@ -38,6 +39,7 @@ app.use(bodyParser.json());
 app.use("/api", questsRouter);
 app.use("/api", roomsRouter);
 app.use("/api", meRouter);
+app.use("/api", usersRouter);
 
 const server = http.createServer(app);
 const socket = require("socket.io");

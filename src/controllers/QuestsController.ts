@@ -56,16 +56,22 @@ export default class QuestsController<
       console.log("No data store found so no DB writes can happen :(");
       return;
     }
+    if (!(await this.cu.isTeacher())) {
+      console.log("Only teachers can create new quests!");
+      return this.notAuthorized();
+    }
     const questId = uuidv4();
     const collection = this.dataStore.collection(questsCollection);
+    const teacher = await this.cu.getUser();
+    let questData = { ...data, creatorId: teacher!.id };
     try {
-      await collection.doc(questId).set(data);
+      await collection.doc(questId).set(questData);
     } catch (err) {
       console.log("An error ocurred while creating a quest");
       console.log(err);
       return this.serverError();
     }
-    this.ok({ quest: { id: questId, ...data } });
+    this.ok({ quest: { id: questId, ...questData } });
   }
 
   /**
@@ -104,7 +110,6 @@ export default class QuestsController<
     return Joi.object().keys({
       name: Joi.string().required(),
       description: Joi.string().required(),
-      creatorId: Joi.string().required(),
       roomId: Joi.string().required(),
       reward: Joi.object()
         .keys({
