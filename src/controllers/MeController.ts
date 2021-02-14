@@ -20,6 +20,7 @@ export default class QuestsController<
 
   protected async handleRequestImpl(method: THttpMethod, paramsData: any) {
     if (method === "GET") {
+      console.log(paramsData);
       await this.fetchMe();
     }
   }

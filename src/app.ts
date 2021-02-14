@@ -84,7 +84,13 @@ io.on("connection", (socket) => {
   // This events needs the following info inside the data object:
   // title, description, type, userType
   socket.on("createNotification", (data) => {
-    socket.emit("notification", data);
+    console.log("We are calling to: ", data);
+    try {
+      io.to(data.userToCall).emit("notification", data);
+    } catch (error) {
+      console.log("Error while sending notification: ", error);
+    }
+
     console.log("A notification has been created");
   });
 
@@ -92,7 +98,7 @@ io.on("connection", (socket) => {
   socket.on("acceptCall", (data) => {
     console.log("Se aceptó la llamada");
     //We  send to the user the event "callAccepted"
-    io.to(data.to).emit("callAccepted", data.signal);
+    io.to(data.to).emit("callAccepted", data);
   });
 });
 

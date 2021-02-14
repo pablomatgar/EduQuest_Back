@@ -29,6 +29,7 @@ interface IUser {
 export class CurrentUser<TDataStore extends firebase.firestore.Firestore>
   implements ICurrentUser {
   private store: TDataStore;
+  /* tslint:disable:no-unused-variable */
   private req: Request;
   private userId?: string;
   private userCached?: IUser;
